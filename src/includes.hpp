@@ -5,5 +5,6 @@
 #include <algorithm>
 #include <fstream>
 #include <cstring>
+#include <unordered_set>
 
 #endif  // AOC2018_INCLUDES_HPP

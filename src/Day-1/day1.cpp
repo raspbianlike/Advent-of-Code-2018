@@ -1,3 +1,4 @@
+#include <unordered_set>
 #include "day1.hpp"
 
 void Day1::Execute() {
@@ -9,6 +10,7 @@ void Day1::Execute() {
     std::ifstream fstr(p);
     std::stringstream strs;
     std::vector<int> input;
+    std::unordered_set<int> ipt;
 
     if (!fstr) {
         printf("Bad input file!\n");
@@ -29,18 +31,21 @@ void Day1::Execute() {
 
     printf("Part 1: %i\n", frequency1);
 
-    std::vector<int> freqs = {0};
     int frequency = 0;
+
+    ssize_t prevSize = -1;
+
     while (true) {
         for (auto &it : input) {
             frequency += it;
 
-            if(std::find(freqs.begin(), freqs.end(), frequency) != freqs.end()) {
+            if (ipt.size() == prevSize) {
                 printf("Part 2: %i\n", frequency);
                 return;
             }
+            prevSize = ipt.size();
 
-            freqs.push_back(frequency);
+            ipt.emplace(frequency);
         }
     }
 }

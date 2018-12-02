@@ -32,16 +32,11 @@ void Day2::Execute() {
     int three = 0;
     int two = 0;
     for (auto &x : input) {
-        std::vector<std::string> tmp;
-        for (unsigned long i = 0; i < x.length(); i++) {
-            tmp.push_back(x.substr(i, 1));
-        }
-
         bool hasThree = false;
         bool hasTwo = false;
 
-        for (auto &p : tmp) {
-            long c = std::count(tmp.begin(), tmp.end(), p);
+        for (auto &p : x) {
+            long c = std::count(x.begin(), x.end(), p);
             hasTwo |= c == 2;
             hasThree |= c == 3;
         }

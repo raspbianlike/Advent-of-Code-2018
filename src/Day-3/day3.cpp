@@ -2,6 +2,14 @@
 #include "day3.hpp"
 #include <memory>
 
+// Credit to ko1N for help on Part2
+
+struct claim {
+    int id;
+    int leftMargin, topMargin;
+    int width, height;
+};
+
 void Day3::Execute() {
     printf("-=-=-=-=-=Executing Day 3-=-=-=-=-=\n");
     std::filesystem::path path = "src/Day-3/input.txt";
@@ -22,42 +30,57 @@ void Day3::Execute() {
     while (getline(strs, str))
         input.push_back(str);
 
-    //int ar[1000][1000] = {0};
-    std::map<int, std::array<std::array<int, 1000>, 1000>> mapa = {{0, std::array<std::array<int, 1000>, 1000>{0}}};
+    std::vector<claim> claims;
 
     for (auto &x : input) {
         int id = stoi(x.substr(1, x.rfind('@')));
 
-        int posLeft = stoi(x.substr(x.rfind('@') + 1, x.rfind(',')));
+        int leftMargin = stoi(x.substr(x.rfind('@') + 1, x.rfind(',')));
 
-        int posTop = stoi(x.substr(x.rfind(',') + 1, x.rfind(':')));
+        int topMargin = stoi(x.substr(x.rfind(',') + 1, x.rfind(':')));
 
-        int wide = stoi(x.substr(x.rfind(':') + 1, x.rfind('x')));
+        int width = stoi(x.substr(x.rfind(':') + 1, x.rfind('x')));
 
-        int tall = stoi(x.substr(x.rfind('x') + 1, x.rfind('\n')));
+        int height = stoi(x.substr(x.rfind('x') + 1, x.rfind('\n')));
 
-        for (int i = 0; i < tall; i++)
-            for (int y = 0; y < wide; y++)
-                mapa[id][posTop + i][posLeft + y]++;
+        auto c = claim{};
+        c.leftMargin = leftMargin;
+        c.topMargin = topMargin;
+        c.width = width;
+        c.height = height;
+        c.id = id;
+
+        claims.push_back(c);
     }
 
+    int fabric[1000][1000] = {0};
     int overlap = 0;
     int intact = 0;
 
-    for (auto c : mapa) {
-        for (auto &x : c.second) {
-            bool valid = true;
-            for (int y = 0; y < 1000; y++) {
-                if (x[y] > 1) {
-                    valid = false;
-                    overlap++;
-                }
-            }
-            if (valid)
-                intact = c.first;
-        }
-    }
-    printf("overlap : %i\n", overlap);
-    printf("id : %i\n", intact);
+    for (auto &c : claims)
+        for (int x = c.leftMargin; x < c.width + c.leftMargin; x++)
+            for (int y = c.topMargin; y < c.height + c.topMargin; y++)
+                if (fabric[x][y] != 0)
+                    fabric[x][y] = -1;
+                else
+                    fabric[x][y] = c.id;
 
+    for (auto &x : fabric)
+        for (int y : x)
+            if (y == -1)
+                overlap++;
+
+
+    for (auto &c : claims) {
+        bool valid = true;
+        for (int x = c.leftMargin; x < c.width + c.leftMargin; x++)
+            for (int y = c.topMargin; y < c.height + c.topMargin; y++)
+                if (fabric[x][y] == -1)
+                    valid = false;
+        if (valid)
+            intact = c.id;
+    }
+
+    printf("Part 1: %i\n", overlap);
+    printf("Part 2: %i\n", intact);
 }

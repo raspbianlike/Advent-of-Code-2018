@@ -48,14 +48,12 @@ void Day3::Execute() {
         for (auto &x : c.second) {
             bool valid = true;
             for (int y = 0; y < 1000; y++) {
-                if (x[y] == 1)
-                    intact = c.first;
                 if (x[y] > 1) {
                     valid = false;
                     overlap++;
                 }
             }
-            if(valid)
+            if (valid)
                 intact = c.first;
         }
     }

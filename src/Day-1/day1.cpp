@@ -1,7 +1,7 @@
 #include "day1.hpp"
 
 void Day1::Execute() {
-
+    printf("-=-=-=-=-=Executing Day 1-=-=-=-=-=\n");
     // load input into buffer
 
     std::filesystem::path p = "src/Day-1/input.txt";

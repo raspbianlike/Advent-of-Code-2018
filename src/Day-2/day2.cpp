@@ -11,6 +11,7 @@ std::string GetMatchCount(std::string s1, std::string s2, long &result) {
 }
 
 void Day2::Execute() {
+    printf("-=-=-=-=-=Executing Day 2-=-=-=-=-=\n");
     std::filesystem::path path = "src/Day-2/input.txt";
 
     std::ifstream fstr(path);
@@ -45,7 +46,7 @@ void Day2::Execute() {
         three += hasThree;
     }
 
-    printf("Result 1: %i\n", three * two);
+    printf("Part 1: %i\n", three * two);
 
     for (auto &x : input) {
         long matchCount = 0;
@@ -54,7 +55,7 @@ void Day2::Execute() {
             result = GetMatchCount(x, y, matchCount);
 
             if (matchCount == x.length() - 1) {
-                printf("Result 2: %s\n", result.c_str());
+                printf("Part 2: %s\n", result.c_str());
                 return;
             }
         }

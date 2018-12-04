@@ -4,10 +4,10 @@
 
 // Credit to ko1N for help on Part2
 
-struct claim {
-    int id;
-    int leftMargin, topMargin;
-    int width, height;
+struct claim_t {
+    int id = -1;
+    int leftMargin = -1, topMargin = -1;
+    int width = -1, height = -1;
 };
 
 void Day3::Execute() {
@@ -30,7 +30,7 @@ void Day3::Execute() {
     while (getline(strs, str))
         input.push_back(str);
 
-    std::vector<claim> claims;
+    std::vector<claim_t> claims;
 
     for (auto &x : input) {
         int id = stoi(x.substr(1, x.rfind('@')));
@@ -43,12 +43,13 @@ void Day3::Execute() {
 
         int height = stoi(x.substr(x.rfind('x') + 1, x.rfind('\n')));
 
-        auto c = claim{};
-        c.leftMargin = leftMargin;
-        c.topMargin = topMargin;
-        c.width = width;
-        c.height = height;
-        c.id = id;
+        claim_t c{
+                id,
+                leftMargin,
+                topMargin,
+                width,
+                height
+        };
 
         claims.push_back(c);
     }
@@ -63,7 +64,7 @@ void Day3::Execute() {
                 if (fabric[x][y] != 0)
                     fabric[x][y] = -1;
                 else
-                    fabric[x][y] = c.id;
+                    fabric[x][y] = 1;
 
     for (auto &x : fabric)
         for (int y : x)

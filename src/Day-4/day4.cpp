@@ -2,11 +2,14 @@
 
 struct g {
     int id;
-    int month, day;
-    int start, end;
+    int start;
 
-    bool awake, asleep = false;
+    int awake, asleep = -1;
 };
+
+bool SortGuards(const g &a, const g &b) {
+    return a.id < b.id;
+}
 
 void Day4::Execute() {
     printf("-=-=-=-=-=Executing Day 4-=-=-=-=-=\n");
@@ -28,48 +31,96 @@ void Day4::Execute() {
     while (getline(strs, str))
         input.push_back(str);
 
-    std::vector<g> guards;
-    int previous = 0;
+    std::vector<g> guards{};
+    int previousId = 0;
     for (auto &x : input) {
         int start = stoi(x.substr(15, 2));
         int id = 0;
 
-        if (x.find("Guard") != std::string::npos) {
-            id = stoi(x.substr(x.rfind('#') + 1, 2));
-            previous = id;
-        } else
-            id = previous;
-
+        if (x.find("Guard") != std::string::npos)
+            previousId = id = stoi(x.substr(x.rfind('#') + 1, x.rfind("begins") - 1));
+        else
+            id = previousId;
 
         bool asleep = x.find("asleep") != std::string::npos;
+        bool awake = x.find("up") != std::string::npos;
         g guard = g{};
 
-        guard.asleep = asleep;
-        guard.awake = !asleep;
+        if (asleep)
+            guard.asleep = 1;
+
+        if (awake)
+            guard.awake = 1;
+
         guard.id = id;
-
-        printf("start: %i, asleep: %i, awake: %i\n", start, asleep, guard.awake);
-
-        if (guard.awake)
-            guard.end = start;
-        else if (guard.asleep)
-            guard.start = start;
-
+        guard.start = start;
         guards.push_back(guard);
-
     }
 
-    int guardSleepTime[1000]= {0};
+    std::sort(guards.begin(), guards.end(), SortGuards);
+
+    int guardSleepTime[3000] = {0};
+    int guardSleepTimeAmount[3000][60] = {0};
+    int maxSleepTime = 0;
+    int guardId = 0;
+
     for (auto c : guards) {
-        if (c.asleep) {
-            for(int i = 0; i < c.)
+        static int prevId = 0;
+        static int sleepTime = 0;
+        if (prevId != c.id) {
+            if (guardSleepTime[prevId] > maxSleepTime) {
+                guardId = prevId;
+                maxSleepTime = guardSleepTime[prevId];
+            }
+            prevId = c.id;
+            sleepTime = 0;
         }
-            guardSleepTime[c.id] += c.end;
+
+        int tmp = 0;
+        if (c.asleep == 1) {
+            sleepTime = c.start;
+        } else if (c.awake == 1) {
+            tmp = c.start - sleepTime;
+            guardSleepTime[c.id] += tmp;
+
+            for (int i = sleepTime; i < c.start; i++)
+                guardSleepTimeAmount[c.id][i]++;
+        }
     }
 
-    for (int i = 0; i < 101; i++) {
-        printf("guard %i has %i minutes\n", i, guardSleepTime[i]);
-    }
-    int max[1000] = {0};
+    int guardMinuteId = 0;
 
+    for (int x = 0; x < 60; x++) {
+        static int tmp = 0;
+        if (guardSleepTimeAmount[guardId][x] > tmp) {
+            guardMinuteId = x;
+            tmp = guardSleepTimeAmount[guardId][x];
+        }
+    }
+
+    int guardId2 = 0;
+    int guardMinuteId2 = 0;
+
+    for (int i = 0; i < 3000; i++) {
+        static int max = 0;
+        int tmpSleepTimeMinute = 0;
+        int tmpGuardId = 0;
+        for (int x = 0; x < 60; x++) {
+            if (guardSleepTimeAmount[i][x] > tmpSleepTimeMinute) {
+                tmpSleepTimeMinute = guardSleepTimeAmount[i][x];
+                tmpGuardId = x;
+            }
+            if (tmpSleepTimeMinute > max) {
+                guardId2 = i;
+                max = tmpSleepTimeMinute;
+                guardMinuteId2 = tmpGuardId;
+            }
+        }
+    }
+
+    int iD1 = guardMinuteId * guardId;
+    int iD2 = guardMinuteId2 * guardId2;
+
+    printf("Part 1: %i\n", iD1);
+    printf("Part 2: %i\n", iD2);
 }

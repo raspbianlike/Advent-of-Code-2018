@@ -1,13 +1,13 @@
 #include "day4.hpp"
 
-struct g {
-    int id;
-    int start;
+struct guard_t {
+    int id = -1;
+    int start = -1;
 
-    int awake, asleep = -1;
+    int awake = -1, asleep = -1;
 };
 
-bool SortGuards(const g &a, const g &b) {
+bool SortGuards(const guard_t &a, const guard_t &b) {
     return a.id < b.id;
 }
 
@@ -31,8 +31,9 @@ void Day4::Execute() {
     while (getline(strs, str))
         input.push_back(str);
 
-    std::vector<g> guards{};
+    std::vector<guard_t> guards{};
     int previousId = 0;
+
     for (auto &x : input) {
         int start = stoi(x.substr(15, 2));
         int id = 0;
@@ -44,16 +45,13 @@ void Day4::Execute() {
 
         bool asleep = x.find("asleep") != std::string::npos;
         bool awake = x.find("up") != std::string::npos;
-        g guard = g{};
+        guard_t guard{
+                id,
+                start,
+                awake,
+                asleep
+        };
 
-        if (asleep)
-            guard.asleep = 1;
-
-        if (awake)
-            guard.awake = 1;
-
-        guard.id = id;
-        guard.start = start;
         guards.push_back(guard);
     }
 
@@ -62,16 +60,24 @@ void Day4::Execute() {
     int guardSleepTime[3000] = {0};
     int guardSleepTimeAmount[3000][60] = {0};
     int maxSleepTime = 0;
+
+    int guardMinuteId = 0;
     int guardId = 0;
 
-    for (auto c : guards) {
+    int guardId2 = 0;
+    int guardMinuteId2 = 0;
+
+    for (auto &c : guards) {
         static int prevId = 0;
         static int sleepTime = 0;
+        static int max = 0;
+
         if (prevId != c.id) {
             if (guardSleepTime[prevId] > maxSleepTime) {
                 guardId = prevId;
                 maxSleepTime = guardSleepTime[prevId];
             }
+
             prevId = c.id;
             sleepTime = 0;
         }
@@ -83,38 +89,23 @@ void Day4::Execute() {
             tmp = c.start - sleepTime;
             guardSleepTime[c.id] += tmp;
 
-            for (int i = sleepTime; i < c.start; i++)
+            for (int i = sleepTime; i < c.start; i++) {
                 guardSleepTimeAmount[c.id][i]++;
+                if (guardSleepTimeAmount[c.id][i] > max) {
+                    max = guardSleepTimeAmount[c.id][i];
+                    guardId2 = c.id;
+                    guardMinuteId2 = i;
+                }
+            }
         }
     }
 
-    int guardMinuteId = 0;
 
-    for (int x = 0; x < 60; x++) {
+    for (int x = 0; x < 60; x++) { // Put me in the upper loop so the code is even more unreadable!
         static int tmp = 0;
         if (guardSleepTimeAmount[guardId][x] > tmp) {
             guardMinuteId = x;
             tmp = guardSleepTimeAmount[guardId][x];
-        }
-    }
-
-    int guardId2 = 0;
-    int guardMinuteId2 = 0;
-
-    for (int i = 0; i < 3000; i++) {
-        static int max = 0;
-        int tmpSleepTimeMinute = 0;
-        int tmpGuardId = 0;
-        for (int x = 0; x < 60; x++) {
-            if (guardSleepTimeAmount[i][x] > tmpSleepTimeMinute) {
-                tmpSleepTimeMinute = guardSleepTimeAmount[i][x];
-                tmpGuardId = x;
-            }
-            if (tmpSleepTimeMinute > max) {
-                guardId2 = i;
-                max = tmpSleepTimeMinute;
-                guardMinuteId2 = tmpGuardId;
-            }
         }
     }
 

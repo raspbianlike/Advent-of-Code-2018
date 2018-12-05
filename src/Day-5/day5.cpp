@@ -9,18 +9,22 @@ bool caseInsensitiveStringCompare(const std::string &str1, const std::string &st
 }
 
 std::string ReactInput(std::string &str1) {
-    for(long i = 0; i < str1.length() - 1; i++) {
-        if(islower(str1[i]) || isupper(str1[i])) {
+    for (long i = 0; i < str1.size() - 1; i++) {
+        if (islower(str1[i]) || isupper(str1[i])) {
+            if ((isupper(str1[i]) && isupper(str1[i + 1])) || (islower(str1[i]) && islower(str1[i + 1])))
+                continue;
             std::string one = std::string(1, str1[i]);
             std::string two = std::string(1, str1[i + 1]);
-            if(caseInsensitiveStringCompare(one,two)) {
-                str1.erase(i, 2);
+            if (caseInsensitiveStringCompare(one, two)) {
+                str1.erase(i, 1);
+                str1.erase(i, 1);
                 return ReactInput(str1);
             }
         }
     }
     return str1;
 }
+
 void Day5::Execute() {
     printf("-=-=-=-=-=Executing Day 5-=-=-=-=-=\n");
     std::filesystem::path path = "src/Day-5/input.txt";

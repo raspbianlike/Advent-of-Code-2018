@@ -25,6 +25,21 @@ std::string ReactInput(std::string &str1) {
     return str1;
 }
 
+int GetShortestPoly(std::string &str1) {
+    char alph[26] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+    int bestLength = 99999999;
+    for(int i = 0; i < 25; i++) {
+        std::string str = str1;
+        str.erase(std::remove(str.begin(), str.end(), alph[i]), str.end());
+        str.erase(std::remove(str.begin(), str.end(), toupper(alph[i])), str.end());
+
+        std::string res = ReactInput(str);
+
+        if(res.length() < bestLength)
+            bestLength = res.length();
+    }
+    return bestLength;
+}
 void Day5::Execute() {
     printf("-=-=-=-=-=Executing Day 5-=-=-=-=-=\n");
     std::filesystem::path path = "src/Day-5/input.txt";
@@ -80,5 +95,7 @@ void Day5::Execute() {
         }
     }*/
     result = ReactInput(*input.begin());
-    printf("result: %s, length %lu\n", result.c_str(), result.length());
+
+    int best = GetShortestPoly(*input.begin());
+    printf("result: %s, length %lu, 2: %i\n", result.c_str(), result.length(), best);
 }

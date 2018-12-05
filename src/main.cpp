@@ -9,5 +9,7 @@ int main() {
 
     Day4::Execute();
 
+    Day5::Execute();
+
     return 0;
 }

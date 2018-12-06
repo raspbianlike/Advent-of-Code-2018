@@ -6,5 +6,6 @@
 #include "Day-3/day3.hpp"
 #include "Day-4/day4.hpp"
 #include "Day-5/day5.hpp"
+#include "Day-6/day6.hpp"
 
 #endif  // AOC2018_REFERENCE_HPP

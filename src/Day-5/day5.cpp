@@ -1,3 +1,4 @@
+#include <iostream>
 #include "day5.hpp"
 
 bool caseInsensitiveStringCompare(const std::string &str1, const std::string &str2) {
@@ -40,6 +41,7 @@ int GetShortestPoly(std::string &str1) {
     }
     return bestLength;
 }
+
 void Day5::Execute() {
     printf("-=-=-=-=-=Executing Day 5-=-=-=-=-=\n");
     std::filesystem::path path = "src/Day-5/input.txt";
@@ -71,14 +73,11 @@ void Day5::Execute() {
             if (p + 1 < i.base()->length()) {
                 if ((std::isupper(i.base()->at(p)) && std::islower(i.base()->at(p + 1))) || (std::islower(i.base()->at(p)) && std::isupper(i.base()->at(p + 1)))) {
                     //printf("we have match\n");
-
                     std::string one = std::string(1, i.base()->at(p));
                     std::string two = std::string(1, i.base()->at(p + 1));
-
                     if (caseInsensitiveStringCompare(one, two)) {
                         didCompare = true;
                         //printf("we have cC: %s, %s\n", one.c_str(), two.c_str());
-
                         i.base()->erase(p, 1);
                         i.base()->erase(p, 1);
                         p = 0;
@@ -97,5 +96,5 @@ void Day5::Execute() {
     result = ReactInput(*input.begin());
 
     int best = GetShortestPoly(*input.begin());
-    printf("result: %s, length %lu, 2: %i\n", result.c_str(), result.length(), best);
+    //printf("result: %s, length %lu, 2: %i\n", result.c_str(), result.length(), best);
 }
